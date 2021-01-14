@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "852332200233",
+    "project_id": "tutor-a7122",
+    "storage_bucket": "tutor-a7122.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:852332200233:android:cdb3a254a80e23b73ef738",
+        "android_client_info": {
+          "package_name": "com.devslope.tutor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "852332200233-vo15semd4l2fvstd64a1veomu0jesv65.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.devslope.tutor",
+            "certificate_hash": "578a80b481876ce4fdbbd7c0a8ef59dc3fecbcc2"
+          }
+        },
+        {
+          "client_id": "852332200233-h7nro2uv0fp0lll6jav240gfpei31chg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhaf9dcBQ38oofGWD8gsPOZvNudahbc0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "852332200233-h7nro2uv0fp0lll6jav240gfpei31chg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
