@@ -2,53 +2,29 @@ import 'package:firebaseflutterdemo/Widgets/CircularImage.dart';
 import 'package:firebaseflutterdemo/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-class CloudFirestorePage extends StatefulWidget {
-  CloudFirestorePage({Key key}) : super(key: key);
+//****************************************************/
+//*  In this widget the rejected tutors are shown    //
+//*  they can be accepted from here                  //
+//!--------------------------------------------------//
 
+class RejectedTutorsList extends StatefulWidget {
   @override
-  CloudFirestorePageState createState() {
-    return new CloudFirestorePageState();
-  }
+  _RejectedTutorsListState createState() => _RejectedTutorsListState();
 }
 
-class CloudFirestorePageState extends State<CloudFirestorePage> {
-  CloudFirestorePageState() : super() {
-    // this.getData();
-    this.monitorAuthenticationState();
-  }
-
-  // Authentication
-
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User user;
-  monitorAuthenticationState() {
-    auth.authStateChanges().listen((User user) {
-      if (user != null) {
-        print("CloudFirestore: User logged in");
-      } else {
-        print("CloudFirestore: User logged out");
-      }
-      setState(() {
-        this.user = user;
-      });
-    });
-  }
-
-  // Data
-
+class _RejectedTutorsListState extends State<RejectedTutorsList> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<dynamic> uid = [];
   List<dynamic> phone = [];
   List<dynamic> subjectSpecialist = [];
   List<dynamic> firstName = [];
 
-  //! GET DATA FUNCTION
+  //* GET DATA FUNCTION - Get Tutors Rejected
   getData() {
     return firestore
         .collection("pendingTutors")
-        .where('status', isEqualTo: 'pending')
+        .where('status', isEqualTo: 'rejected')
         .snapshots()
         .listen((querySnapshot) {
       uid = [];
@@ -72,8 +48,8 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
     });
   }
 
-  //? Accept tutor
-  acceptTutor(userID) async {
+  //? Accept Tutors - Change Status To Accepted
+  acceptedTutor(userID) async {
     await firestore
         .collection('pendingTutors')
         .doc(userID)
@@ -84,27 +60,11 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
     });
   }
 
-  //! Reject tutor
-  rejectTutor(userID) async {
-    await firestore
-        .collection('pendingTutors')
-        .doc(userID)
-        .update({'status': 'rejected'});
-    await this.getData();
-    setState(() {
-      print("state Setted In Accpet Tutor");
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("View Request"),
-        backgroundColor: Orange,
-      ),
-      // ListView Builder Is In The Body
+      appBar: AppBar(title: Text("Rejected Tutors"), backgroundColor: Orange),
       body: uid.length == 0
           ? Center(
               child: FlatButton(
@@ -114,7 +74,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    "Show Tutor Requests",
+                    "Show Rejected Tutors",
                     style: TextStyle(color: Orange, fontSize: 25.0),
                   ),
                 ),
@@ -147,7 +107,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                       children: [
                         // Left Container
                         Container(
-                          width: size.width * 0.8,
+                          width: size.width * 0.7,
                           child: Row(
                             // mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -222,14 +182,18 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                           ),
                         ),
 
-                        // Action Buttons
+                        // Action Button Accept Tutor
                         Container(
-                          // width: size.width * 0.2,
+                          width: size.width * 0.2,
                           child: Row(
                             children: [
+                              SizedBox(
+                                width: 150,
+                              ),
                               FlatButton(
                                 onPressed: () {
-                                  this.acceptTutor(uid[index]);
+                                  this.acceptedTutor(uid[index]);
+                                  // dispose();
 
                                   print(uid[index]);
                                 },
@@ -244,14 +208,11 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                                 ),
                               ),
                               // Reject
-                              SizedBox(
+                              /*SizedBox(
                                 width: 20,
                               ),
                               FlatButton(
-                                onPressed: () {
-                                  this.rejectTutor(uid[index]);
-                                  print(uid[index]);
-                                },
+                                onPressed: () {},
                                 child: Text(
                                   "Reject",
                                   style: TextStyle(
@@ -261,7 +222,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                                   borderRadius: BorderRadius.circular(18.0),
                                   side: BorderSide(color: Colors.red),
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
                         ),

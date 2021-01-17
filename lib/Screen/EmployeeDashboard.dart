@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebaseflutterdemo/Screen/AddEmployee.dart';
+import 'package:firebaseflutterdemo/Screen/EmployeeTutorRequest.dart';
 import 'package:firebaseflutterdemo/Screen/RejectedTutors.dart';
 import 'package:firebaseflutterdemo/Screen/TutorRequest.dart';
 import 'package:firebaseflutterdemo/Screen/AcceptedTutors.dart';
@@ -9,27 +10,28 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 //! External Modules
-// import 'package:dashboard/Widgets/leftNav.dart';
-// import 'package:dashboard/theme.dart';
+// import 'package:EmployeeDashboard/Widgets/leftNav.dart';
+// import 'package:EmployeeDashboard/theme.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
-class Dashboard extends StatefulWidget {
-  static final id = "/dashboard";
+class EmployeeDashboard extends StatefulWidget {
+  static final id = "/employeedashboard";
 
-  static final Dashboard _dashboard = Dashboard.internal();
+  static final EmployeeDashboard _EmployeeDashboard =
+      EmployeeDashboard.internal();
 
-  factory Dashboard() {
-    return _dashboard;
+  factory EmployeeDashboard() {
+    return _EmployeeDashboard;
   }
-  Dashboard.internal();
+  EmployeeDashboard.internal();
 
   PageController pageController = PageController();
   @override
-  _DashboardState createState() => _DashboardState();
+  _EmployeeDashboardState createState() => _EmployeeDashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
-  _DashboardState() : super() {
+class _EmployeeDashboardState extends State<EmployeeDashboard> {
+  _EmployeeDashboardState() : super() {
     this.monitorAuthenticationState();
   }
 
@@ -53,47 +55,31 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  // Register The User Account Using Email & Password
-  registerAccountUsingEmail(email, password) async {
-    try {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-    } on FirebaseAuthException catch (err) {
-      if (err.code == "weak-password") {
-        setState(() {
-          errorMessage = "Please enter a stronger password";
-        });
-      } else if (err.code == "email-already-in-use") {
-        setState(() {
-          errorMessage =
-              "This email has already been registered to another account";
-        });
-      }
-    } catch (err) {
-      // other errors
-      print(err);
-    }
-  }
-
   // Login Using Email & Password
   loginUsingEmail(email, password) async {
-    try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } on FirebaseAuthException catch (err) {
-      if (err.code == "user-not-found") {
-        setState(() {
-          errorMessage = "There is no account connected to this email address";
-        });
-      } else if (err.code == "wrong-password") {
-        setState(() {
-          errorMessage = "Incorrect password";
-        });
+    if (email == 'fahad.ammar@hotmail.com') {
+      setState(() {
+        errorMessage = "This Is The Admin's Email";
+      });
+    } else
+      try {
+        UserCredential userCredential = await auth.signInWithEmailAndPassword(
+            email: email, password: password);
+      } on FirebaseAuthException catch (err) {
+        if (err.code == "user-not-found") {
+          setState(() {
+            errorMessage =
+                "There is no account connected to this email address";
+          });
+        } else if (err.code == "wrong-password") {
+          setState(() {
+            errorMessage = "Incorrect password";
+          });
+        }
+      } catch (err) {
+        // other errors
+        print(err);
       }
-    } catch (err) {
-      // other errors
-      print(err);
-    }
   }
 
   // LogOut - auth.signOut()
@@ -119,19 +105,8 @@ class _DashboardState extends State<Dashboard> {
     return null;
   }
 
-  onRegisterFormSubmitted() {
-    if (formKey.currentState.validate()) {
-      formKey.currentState.save();
-      this.registerAccountUsingEmail(email, password);
-    }
-  }
-
   onLoginFormSubmitted() {
-    if (email != "fahad.ammar@hotmail.com") {
-      setState(() {
-        errorMessage = 'Use Admin Email';
-      });
-    } else if (formKey.currentState.validate()) {
+    if (formKey.currentState.validate()) {
       formKey.currentState.save();
       this.loginUsingEmail(email, password);
     }
@@ -143,8 +118,9 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dashboard',
+      title: 'Employee Dashboard',
       home: Scaffold(
+        //? AppBar
         appBar: AppBar(
           title: user == null
               ? ListTile(
@@ -153,7 +129,7 @@ class _DashboardState extends State<Dashboard> {
                     color: OrangeLight,
                   ),
                   title: Text(
-                    "Sign In As Admin",
+                    "Sign In As Employee",
                     style: TextStyle(color: Colors.white, fontSize: 20.0),
                   ),
                 )
@@ -163,12 +139,13 @@ class _DashboardState extends State<Dashboard> {
                     color: OrangeLight,
                   ),
                   title: Text(
-                    "Dashboard",
+                    "Employee Dashboard",
                     style: TextStyle(color: Colors.white, fontSize: 20.0),
                   ),
                 ),
           backgroundColor: Colors.black,
         ),
+        //* Drawer
         drawer: user == null
             ? Drawer(
                 child: Center(
@@ -178,7 +155,7 @@ class _DashboardState extends State<Dashboard> {
                 )),
               )
             : DrawerMenu(
-                isAdmin: true,
+                isAdmin: false,
                 userLogOut: this.logOut,
               ),
         body: Form(
@@ -221,17 +198,13 @@ class _DashboardState extends State<Dashboard> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red)))),
-                      // Register - Login  Buttons In Row
+                      //  Login  Buttons In Row
                       Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 4.0, horizontal: 32.0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                ElevatedButton(
-                                  onPressed: onRegisterFormSubmitted,
-                                  child: Text('Register'),
-                                ),
                                 ElevatedButton(
                                   onPressed: onLoginFormSubmitted,
                                   child: Text('Login'),
@@ -240,12 +213,7 @@ class _DashboardState extends State<Dashboard> {
                     ])
               : PageView(
                   controller: widget.pageController,
-                  children: [
-                    TutorRequest(),
-                    AcceptedTutor(),
-                    RejectedTutor(),
-                    AddEmployee()
-                  ],
+                  children: [EmployeeTutorRequest()],
                 ),
         ),
       ),

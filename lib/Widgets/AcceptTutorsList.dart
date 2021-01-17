@@ -2,53 +2,29 @@ import 'package:firebaseflutterdemo/Widgets/CircularImage.dart';
 import 'package:firebaseflutterdemo/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-class CloudFirestorePage extends StatefulWidget {
-  CloudFirestorePage({Key key}) : super(key: key);
+//****************************************************/
+//*  In this widget the accepted tutors are shown    //
+//*  they can be rejected from here                  //
+//!--------------------------------------------------//
 
+class AcceptedTutorsList extends StatefulWidget {
   @override
-  CloudFirestorePageState createState() {
-    return new CloudFirestorePageState();
-  }
+  _AcceptedTutorsListState createState() => _AcceptedTutorsListState();
 }
 
-class CloudFirestorePageState extends State<CloudFirestorePage> {
-  CloudFirestorePageState() : super() {
-    // this.getData();
-    this.monitorAuthenticationState();
-  }
-
-  // Authentication
-
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User user;
-  monitorAuthenticationState() {
-    auth.authStateChanges().listen((User user) {
-      if (user != null) {
-        print("CloudFirestore: User logged in");
-      } else {
-        print("CloudFirestore: User logged out");
-      }
-      setState(() {
-        this.user = user;
-      });
-    });
-  }
-
-  // Data
-
+class _AcceptedTutorsListState extends State<AcceptedTutorsList> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<dynamic> uid = [];
   List<dynamic> phone = [];
   List<dynamic> subjectSpecialist = [];
   List<dynamic> firstName = [];
 
-  //! GET DATA FUNCTION
+  //* GET DATA FUNCTION - Get Tutors Accpeted
   getData() {
     return firestore
         .collection("pendingTutors")
-        .where('status', isEqualTo: 'pending')
+        .where('status', isEqualTo: 'accepted')
         .snapshots()
         .listen((querySnapshot) {
       uid = [];
@@ -72,19 +48,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
     });
   }
 
-  //? Accept tutor
-  acceptTutor(userID) async {
-    await firestore
-        .collection('pendingTutors')
-        .doc(userID)
-        .update({'status': 'accepted'});
-    await this.getData();
-    setState(() {
-      print("state Setted In Accpet Tutor");
-    });
-  }
-
-  //! Reject tutor
+  //! Reject Tutors -  Change Status To Rejected
   rejectTutor(userID) async {
     await firestore
         .collection('pendingTutors')
@@ -100,11 +64,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("View Request"),
-        backgroundColor: Orange,
-      ),
-      // ListView Builder Is In The Body
+      appBar: AppBar(title: Text("Accepted Tutors"), backgroundColor: Orange),
       body: uid.length == 0
           ? Center(
               child: FlatButton(
@@ -114,7 +74,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    "Show Tutor Requests",
+                    "Show Accepted Tutors",
                     style: TextStyle(color: Orange, fontSize: 25.0),
                   ),
                 ),
@@ -147,7 +107,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                       children: [
                         // Left Container
                         Container(
-                          width: size.width * 0.8,
+                          width: size.width * 0.7,
                           child: Row(
                             // mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -224,32 +184,18 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
 
                         // Action Buttons
                         Container(
-                          // width: size.width * 0.2,
+                          width: size.width * 0.2,
                           child: Row(
                             children: [
-                              FlatButton(
-                                onPressed: () {
-                                  this.acceptTutor(uid[index]);
-
-                                  print(uid[index]);
-                                },
-                                child: Text(
-                                  "Accept",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 18.0),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.green),
-                                ),
-                              ),
-                              // Reject
+                              // Reject Tutor Button
                               SizedBox(
-                                width: 20,
+                                width: 120,
                               ),
                               FlatButton(
                                 onPressed: () {
                                   this.rejectTutor(uid[index]);
+                                  // dispose();
+
                                   print(uid[index]);
                                 },
                                 child: Text(

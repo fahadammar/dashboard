@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class CloudFirestorePage extends StatefulWidget {
-  CloudFirestorePage({Key key}) : super(key: key);
+class EmployeeTutorView extends StatefulWidget {
+  final access;
+
+  EmployeeTutorView({Key key, this.access}) : super(key: key);
 
   @override
-  CloudFirestorePageState createState() {
-    return new CloudFirestorePageState();
+  EmployeeTutorViewState createState() {
+    return new EmployeeTutorViewState();
   }
 }
 
-class CloudFirestorePageState extends State<CloudFirestorePage> {
-  CloudFirestorePageState() : super() {
+class EmployeeTutorViewState extends State<EmployeeTutorView> {
+  EmployeeTutorViewState() : super() {
     // this.getData();
     this.monitorAuthenticationState();
   }
@@ -43,6 +45,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
   List<dynamic> phone = [];
   List<dynamic> subjectSpecialist = [];
   List<dynamic> firstName = [];
+  String access = "";
 
   //! GET DATA FUNCTION
   getData() {
@@ -72,6 +75,28 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
     });
   }
 
+  //* Get The Access Status Of The Tutor
+  getAccess() {
+    return firestore
+        .collection("Employees")
+        .where('access')
+        .snapshots()
+        .listen((querySnapshot) {
+      access = '';
+      List<QueryDocumentSnapshot> docSnapshots = querySnapshot.docs;
+      docSnapshots.forEach((docSnapshot) {
+        Map<String, dynamic> data = docSnapshot.data();
+        if (data['access'] != null) {
+          setState(() {
+            access = data['access'] as String;
+            print("The Access Is: $access");
+          });
+        } else
+          print("Waiting!! - Error In Employees Collection");
+      });
+    });
+  }
+
   //? Accept tutor
   acceptTutor(userID) async {
     await firestore
@@ -80,7 +105,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
         .update({'status': 'accepted'});
     await this.getData();
     setState(() {
-      print("state Setted In Accpet Tutor");
+      print("\nThe Tutor Status Setted To: Accepted");
     });
   }
 
@@ -92,7 +117,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
         .update({'status': 'rejected'});
     await this.getData();
     setState(() {
-      print("state Setted In Accpet Tutor");
+      print("\nThe Tutor Status Setted To: Rejected");
     });
   }
 
@@ -110,6 +135,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
               child: FlatButton(
                 onPressed: () async {
                   await this.getData();
+                  await this.getAccess();
                 },
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
@@ -145,7 +171,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        // Left Container
+                        //? Left Container
                         Container(
                           width: size.width * 0.8,
                           child: Row(
@@ -222,46 +248,57 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                           ),
                         ),
 
-                        // Action Buttons
+                        //* Action Buttons
                         Container(
                           // width: size.width * 0.2,
                           child: Row(
                             children: [
-                              FlatButton(
-                                onPressed: () {
-                                  this.acceptTutor(uid[index]);
+                              access == 'accept' && access != 'view'
+                                  ?
+                                  // Accept Button
+                                  FlatButton(
+                                      onPressed: () {
+                                        this.acceptTutor(uid[index]);
 
-                                  print(uid[index]);
-                                },
-                                child: Text(
-                                  "Accept",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 18.0),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.green),
-                                ),
-                              ),
+                                        print(uid[index]);
+                                      },
+                                      child: Text(
+                                        "Accept",
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 18.0),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
+                                        side: BorderSide(color: Colors.green),
+                                      ),
+                                    )
+                                  : Container(),
+
                               // Reject
                               SizedBox(
                                 width: 20,
                               ),
-                              FlatButton(
-                                onPressed: () {
-                                  this.rejectTutor(uid[index]);
-                                  print(uid[index]);
-                                },
-                                child: Text(
-                                  "Reject",
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 18.0),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red),
-                                ),
-                              ),
+
+                              access == "reject" && access != 'view'
+                                  ? FlatButton(
+                                      onPressed: () {
+                                        this.rejectTutor(uid[index]);
+                                        print(uid[index]);
+                                      },
+                                      child: Text(
+                                        "Reject",
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 18.0),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
+                                        side: BorderSide(color: Colors.red),
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ),
