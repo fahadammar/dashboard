@@ -24,6 +24,7 @@ class Dashboard extends StatefulWidget {
   Dashboard.internal();
 
   PageController pageController = PageController();
+
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -119,6 +120,7 @@ class _DashboardState extends State<Dashboard> {
     return null;
   }
 
+  // Register User Function
   onRegisterFormSubmitted() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
@@ -126,14 +128,17 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  // Login Form Function
   onLoginFormSubmitted() {
-    if (email != "fahad.ammar@hotmail.com") {
-      setState(() {
-        errorMessage = 'Use Admin Email';
-      });
-    } else if (formKey.currentState.validate()) {
+    if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      this.loginUsingEmail(email, password);
+      if (email == 'fahad.ammar@hotmail.com') {
+        this.loginUsingEmail(email, password);
+      } else {
+        print("Use Admin Email");
+
+        // errorMessage = "Use Admin Email";
+      }
     }
   }
 
@@ -213,14 +218,19 @@ class _DashboardState extends State<Dashboard> {
                           )),
                       // Error Message
                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 32.0),
-                          child: Center(
-                              child: Text("$errorMessage",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red)))),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 32.0),
+                        child: Center(
+                          child: Text(
+                            "$errorMessage",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
                       // Register - Login  Buttons In Row
                       Padding(
                           padding: const EdgeInsets.symmetric(
@@ -228,10 +238,10 @@ class _DashboardState extends State<Dashboard> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                ElevatedButton(
+                                /*ElevatedButton(
                                   onPressed: onRegisterFormSubmitted,
                                   child: Text('Register'),
-                                ),
+                                ),*/
                                 ElevatedButton(
                                   onPressed: onLoginFormSubmitted,
                                   child: Text('Login'),

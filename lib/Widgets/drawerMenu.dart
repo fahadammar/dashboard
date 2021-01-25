@@ -47,7 +47,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                                 fontWeight: FontWeight.bold),
                           ),
                           onTap: () {
-                            pageIndex.pageController.animateToPage(1,
+                            pageIndex.pageController.animateToPage(0,
                                 duration: Duration(seconds: 1),
                                 curve: Curves.bounceIn);
                             Navigator.pop(context);
@@ -74,7 +74,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             ),
                           ),
                           onTap: () {
-                            pageIndex.pageController.animateToPage(2,
+                            pageIndex.pageController.animateToPage(1,
                                 duration: Duration(seconds: 1),
                                 curve: Curves.bounceIn);
                             Navigator.pop(context);
@@ -101,7 +101,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             ),
                           ),
                           onTap: () {
-                            pageIndex.pageController.animateToPage(3,
+                            pageIndex.pageController.animateToPage(2,
                                 duration: Duration(seconds: 1),
                                 curve: Curves.bounceIn);
                             Navigator.pop(context);
@@ -126,7 +126,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             ),
                           ),
                           onTap: () {
-                            pageIndex.pageController.animateToPage(4,
+                            pageIndex.pageController.animateToPage(3,
                                 duration: Duration(seconds: 1),
                                 curve: Curves.bounceIn);
                             Navigator.pop(context);
