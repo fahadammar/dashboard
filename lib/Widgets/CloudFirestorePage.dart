@@ -42,12 +42,14 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
   List<dynamic> uid = [];
   List<dynamic> phone = [];
   List<dynamic> subjectSpecialist = [];
+  List<dynamic> address = [];
   List<dynamic> firstName = [];
+  List<dynamic> lastName = [];
 
   //! GET DATA FUNCTION
   getData() {
     return firestore
-        .collection("pendingTutors")
+        .collection("tutors")
         .where('status', isEqualTo: 'pending')
         .snapshots()
         .listen((querySnapshot) {
@@ -55,6 +57,8 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
       phone = [];
       subjectSpecialist = [];
       firstName = [];
+      lastName = [];
+      address = [];
       List<QueryDocumentSnapshot> docSnapshots = querySnapshot.docs;
       docSnapshots.forEach((docSnapshot) {
         Map<String, dynamic> data = docSnapshot.data();
@@ -65,6 +69,8 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
             phone.add(data['phone']);
             subjectSpecialist.add(data['subjectName']);
             firstName.add(data['firstName']);
+            lastName.add(data['lastName']);
+            address.add(data['address']);
           });
         } else
           print("Waiting!!");
@@ -75,7 +81,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
   //? Accept tutor
   acceptTutor(userID) async {
     await firestore
-        .collection('pendingTutors')
+        .collection('tutors')
         .doc(userID)
         .update({'status': 'accepted'});
     await this.getData();
@@ -87,7 +93,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
   //! Reject tutor
   rejectTutor(userID) async {
     await firestore
-        .collection('pendingTutors')
+        .collection('tutors')
         .doc(userID)
         .update({'status': 'rejected'});
     await this.getData();
@@ -169,7 +175,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                               Container(
                                 width: size.width * 0.1,
                                 child: Text(
-                                  '${firstName[index]}',
+                                  '${firstName[index]} ${lastName[index]}',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 15.0,
@@ -213,7 +219,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
                               Container(
                                 width: size.width * 0.1,
                                 child: Text(
-                                  "Multan Public School Road, Northern Bypass, Model Town, Devslope, Flutter Developer, RFA For Short",
+                                  "${address[index]}",
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 12.0),
                                 ),

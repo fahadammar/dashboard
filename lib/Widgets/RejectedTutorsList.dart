@@ -18,12 +18,14 @@ class _RejectedTutorsListState extends State<RejectedTutorsList> {
   List<dynamic> uid = [];
   List<dynamic> phone = [];
   List<dynamic> subjectSpecialist = [];
+  List<dynamic> address = [];
   List<dynamic> firstName = [];
+  List<dynamic> lastName = [];
 
   //* GET DATA FUNCTION - Get Tutors Rejected
   getData() {
     return firestore
-        .collection("pendingTutors")
+        .collection("tutors")
         .where('status', isEqualTo: 'rejected')
         .snapshots()
         .listen((querySnapshot) {
@@ -31,6 +33,8 @@ class _RejectedTutorsListState extends State<RejectedTutorsList> {
       phone = [];
       subjectSpecialist = [];
       firstName = [];
+      lastName = [];
+      address = [];
       List<QueryDocumentSnapshot> docSnapshots = querySnapshot.docs;
       docSnapshots.forEach((docSnapshot) {
         Map<String, dynamic> data = docSnapshot.data();
@@ -41,6 +45,8 @@ class _RejectedTutorsListState extends State<RejectedTutorsList> {
             phone.add(data['phone']);
             subjectSpecialist.add(data['subjectName']);
             firstName.add(data['firstName']);
+            lastName.add(data['lastName']);
+            address.add(data['address']);
           });
         } else
           print("Waiting!!");
@@ -51,7 +57,7 @@ class _RejectedTutorsListState extends State<RejectedTutorsList> {
   //? Accept Tutors - Change Status To Accepted
   acceptedTutor(userID) async {
     await firestore
-        .collection('pendingTutors')
+        .collection('tutors')
         .doc(userID)
         .update({'status': 'accepted'});
     await this.getData();
@@ -129,7 +135,7 @@ class _RejectedTutorsListState extends State<RejectedTutorsList> {
                               Container(
                                 width: size.width * 0.1,
                                 child: Text(
-                                  '${firstName[index]}',
+                                  '${firstName[index]} ${lastName[index]}',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 15.0,
@@ -173,7 +179,7 @@ class _RejectedTutorsListState extends State<RejectedTutorsList> {
                               Container(
                                 width: size.width * 0.1,
                                 child: Text(
-                                  "Multan Public School Road, Northern Bypass, Model Town, Devslope, Flutter Developer, RFA For Short",
+                                  "${address[index]}",
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 12.0),
                                 ),
