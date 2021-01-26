@@ -23,6 +23,7 @@ class CloudFirestorePageState extends State<CloudFirestorePage> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
   User user;
+
   monitorAuthenticationState() {
     auth.authStateChanges().listen((User user) {
       if (user != null) {

@@ -5,9 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class EmployeeTutorView extends StatefulWidget {
-  final access;
-
-  EmployeeTutorView({Key key, this.access}) : super(key: key);
+  EmployeeTutorView({Key key}) : super(key: key);
 
   @override
   EmployeeTutorViewState createState() {
@@ -83,20 +81,23 @@ class EmployeeTutorViewState extends State<EmployeeTutorView> {
 
   //* Get The Access Status Of The Tutor
   getAccess() {
+    var user = auth.currentUser;
     return firestore
         .collection("Employees")
-        .where('access')
+        .where('email', isEqualTo: user.email)
         .snapshots()
         .listen((querySnapshot) {
       access = '';
       List<QueryDocumentSnapshot> docSnapshots = querySnapshot.docs;
       docSnapshots.forEach((docSnapshot) {
         Map<String, dynamic> data = docSnapshot.data();
-        if (data['access'] != null) {
-          setState(() {
-            access = data['access'] as String;
-            print("The Access Is: $access");
-          });
+        if (user.email == data['email']) {
+          if (data['access'] != null) {
+            setState(() {
+              access = data['access'] as String;
+              print("The Access Is: $access");
+            });
+          }
         } else
           print("Waiting!! - Error In Employees Collection");
       });
@@ -141,7 +142,8 @@ class EmployeeTutorViewState extends State<EmployeeTutorView> {
               child: FlatButton(
                 onPressed: () async {
                   await this.getData();
-                  await this.getAccess();
+                  var acce = await this.getAccess();
+                  print('Access is: $acce');
                 },
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
@@ -259,7 +261,8 @@ class EmployeeTutorViewState extends State<EmployeeTutorView> {
                           // width: size.width * 0.2,
                           child: Row(
                             children: [
-                              access == 'accept' && access != 'view'
+                              access == 'accept' ||
+                                      access == 'ar' && access != 'view'
                                   ?
                                   // Accept Button
                                   FlatButton(
@@ -287,7 +290,8 @@ class EmployeeTutorViewState extends State<EmployeeTutorView> {
                                 width: 20,
                               ),
 
-                              access == "reject" && access != 'view'
+                              access == "reject" ||
+                                      access == 'ar' && access != 'view'
                                   ? FlatButton(
                                       onPressed: () {
                                         this.rejectTutor(uid[index]);

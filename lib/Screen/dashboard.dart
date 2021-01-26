@@ -4,6 +4,7 @@ import 'package:firebaseflutterdemo/Screen/RejectedTutors.dart';
 import 'package:firebaseflutterdemo/Screen/TutorRequest.dart';
 import 'package:firebaseflutterdemo/Screen/AcceptedTutors.dart';
 import 'package:firebaseflutterdemo/Widgets/drawerMenu.dart';
+import 'package:firebaseflutterdemo/Widgets/textFormField.dart';
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
@@ -120,6 +121,15 @@ class _DashboardState extends State<Dashboard> {
     return null;
   }
 
+  // Functions on saved
+  emailOnSaved(dynamic value) {
+    this.email = value;
+  }
+
+  passwordOnSaved(dynamic value) {
+    this.password = value;
+  }
+
   // Register User Function
   onRegisterFormSubmitted() {
     if (formKey.currentState.validate()) {
@@ -134,10 +144,14 @@ class _DashboardState extends State<Dashboard> {
       formKey.currentState.save();
       if (email == 'fahad.ammar@hotmail.com') {
         this.loginUsingEmail(email, password);
+        setState(() {
+          errorMessage = "";
+        });
       } else {
         print("Use Admin Email");
-
-        // errorMessage = "Use Admin Email";
+        setState(() {
+          errorMessage = "Use Admin Email";
+        });
       }
     }
   }
@@ -189,65 +203,88 @@ class _DashboardState extends State<Dashboard> {
         body: Form(
           key: formKey,
           child: user == null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                      // Email Entry Field
-                      Padding(
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 80.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        // Email Entry Field
+                        Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 4.0, horizontal: 32.0),
-                          child: TextFormField(
-                              decoration: const InputDecoration(
-                                  icon: Icon(Icons.email), labelText: "Email"),
-                              validator: this.emailAddressValidator,
-                              onSaved: (value) {
-                                email = value;
-                              })),
-                      // Password Entry Field
-                      Padding(
+                          child: TextInput(
+                            textInput: TextInputType.emailAddress,
+                            fieldIcon: Icon(Icons.email),
+                            passTrue: false,
+                            textOfLabel: "E-mail",
+                            onSubmit: this.emailOnSaved,
+                            validator: this.emailAddressValidator,
+                          ),
+                        ),
+                        // Password Entry Field
+                        Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 4.0, horizontal: 32.0),
-                          child: TextFormField(
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                                icon: Icon(Icons.lock), labelText: "Password"),
+                          child: TextInput(
+                            textInput: TextInputType.visiblePassword,
+                            passTrue: true,
+                            fieldIcon: Icon(Icons.lock),
+                            textOfLabel: "Password",
+                            onSubmit: this.passwordOnSaved,
                             validator: this.passwordValidator,
-                            onSaved: (value) {
-                              password = value;
-                            },
-                          )),
-                      // Error Message
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4.0, horizontal: 32.0),
-                        child: Center(
-                          child: Text(
-                            "$errorMessage",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
+                          ),
+                        ),
+                        // Error Message
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 32.0),
+                          child: Center(
+                            child: Text(
+                              "$errorMessage",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      // Register - Login  Buttons In Row
-                      Padding(
+                        // Register - Login  Buttons In Row
+                        Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 4.0, horizontal: 32.0),
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                /*ElevatedButton(
-                                  onPressed: onRegisterFormSubmitted,
-                                  child: Text('Register'),
-                                ),*/
-                                ElevatedButton(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              /*ElevatedButton(
+                                    onPressed: onRegisterFormSubmitted,
+                                    child: Text('Register'),
+                                  ),*/
+                              //* Login button
+                              Container(
+                                width: 120,
+                                height: 50,
+                                child: FlatButton(
                                   onPressed: onLoginFormSubmitted,
-                                  child: Text('Login'),
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Orange),
+                                  ),
+                                  color: Colors.green,
                                 ),
-                              ]))
-                    ])
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
+                )
               : PageView(
                   controller: widget.pageController,
                   children: [
