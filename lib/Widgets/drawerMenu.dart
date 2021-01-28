@@ -17,14 +17,30 @@ class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
     return widget.isAdmin == true
-        ? Drawer(
-            elevation: 16.0,
+        ? Container(
+            width: 300,
             //! ListView
-            child: ListView(
+            child: Column(
               children: [
                 //? DrawerHeader Container
-                Container(
-                  child: DrawerHeader(child: Text('')),
+                DrawerHeader(
+                  child: Container(
+                    child: Text(
+                      "Menu",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+
+                SizedBox(
+                  height: 2.0,
                 ),
                 //* The Menu Containers
                 Container(
@@ -164,15 +180,29 @@ class _DrawerMenuState extends State<DrawerMenu> {
               ],
             ),
           )
-        : Drawer(
-            elevation: 16.0,
+        : Container(
+            width: 300,
             //! ListView
-            child: ListView(
+            child: Column(
               children: [
                 //? DrawerHeader Container
-                Container(
-                  child: DrawerHeader(child: Text('')),
+                DrawerHeader(
+                  child: Container(
+                    child: Text(
+                      "Menu",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
+
+                SizedBox(
+                  height: 50.0,
+                ),
+
                 //* The Menu Containers
                 Container(
                   child: Column(
