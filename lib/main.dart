@@ -69,8 +69,8 @@ class LoginAs extends StatelessWidget {
                   child: ClipRRect(
                     child: Image.asset(
                       'assets/welcome_tutor.jpg',
-                      width: 500,
-                      height: 400,
+                      width: 550,
+                      height: 500,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -82,8 +82,8 @@ class LoginAs extends StatelessWidget {
                 Container(
                   // margin: EdgeInsets.only(top: 50.0),
                   padding: EdgeInsets.all(20.0),
-                  width: 400,
-                  height: 400,
+                  width: 500,
+                  height: 500,
                   decoration: BoxDecoration(
                     // bg color
                     color: Colors.white,
